@@ -15,6 +15,9 @@
 import { basename, extname, join, relative, sep } from 'node:path'
 import { readdir, stat as fsStat } from 'node:fs/promises'
 
+/** Log prefix for this plugin. */
+const PLUGIN_ID = 'dsh-session-deliverables'
+
 /** Route: JSON list of one Session's deliverables. */
 const LIST_PATH = '/api/session-files.list'
 /** Route: one deliverable as a download. */
@@ -440,15 +443,68 @@ async function handleDownload(ctx, request) {
   return new Response(stream, { headers: downloadHeaders(name, size) })
 }
 
-/** Register both routes on the Connection fence. */
+
+/** Route surfaces differ by DSH line: 0.2.x exposes connection.fetch.register,
+ *  0.1.x exposes webServer.register with a Node-style handler. Prefer whichever
+ *  exists so one build runs on both; when neither exists, stay loaded and skip. */
+function registerRoute(ctx, spec) {
+  const fetchSurface = ctx.connection && ctx.connection.fetch
+  if (fetchSurface && typeof fetchSurface.register === 'function') {
+    const run = () => fetchSurface.register(spec)
+    return typeof ctx.effect === 'function' ? ctx.effect(run) : run()
+  }
+  const serverSurface = ctx.webServer
+  if (serverSurface && typeof serverSurface.register === 'function') {
+    const run = () => serverSurface.register({ kind: 'exact', path: spec.path, handler: nodeHandler(spec) })
+    return typeof ctx.effect === 'function' ? ctx.effect(run) : run()
+  }
+  const message = `[${PLUGIN_ID}] no HTTP route surface on this DSH; ${spec.path} was not registered`
+  if (ctx.logger && typeof ctx.logger.warn === 'function') ctx.logger.warn(message)
+  else console.warn(message)
+  return () => {}
+}
+
+/** Adapt one Fetch handler to the Node request/response pair webServer.register takes. */
+function nodeHandler(spec) {
+  return async (req, res) => {
+    try {
+      const host = (req.headers && req.headers.host) || '127.0.0.1'
+      const url = new URL(req.url === undefined ? '/' : req.url, `http://${host}`)
+      const method = (req.method === undefined ? 'GET' : req.method).toUpperCase()
+      const allowed = Array.isArray(spec.methods) ? spec.methods : []
+      if (!allowed.includes(method)) {
+        if (!res.headersSent) res.writeHead(405)
+        res.end()
+        return
+      }
+      let body
+      if (spec.requestBody === 'buffered' && method !== 'GET' && method !== 'HEAD') {
+        const chunks = []
+        for await (const chunk of req) chunks.push(chunk)
+        body = Buffer.concat(chunks)
+      }
+      const response = await spec.fetch(new Request(url, { method, headers: req.headers, body }))
+      const headers = {}
+      response.headers.forEach((value, key) => { headers[key] = value })
+      if (!res.headersSent) res.writeHead(response.status, headers)
+      if (response.body === null) res.end()
+      else res.end(Buffer.from(await response.arrayBuffer()))
+    } catch (error) {
+      if (!res.headersSent) res.writeHead(500, { 'content-type': 'text/plain; charset=utf-8' })
+      res.end('internal error')
+    }
+  }
+}
+
+/** Register both routes through whichever route surface this DSH exposes. */
 export function apply(ctx) {
-  ctx.connection.fetch.register({
+  registerRoute(ctx, {
     path: LIST_PATH,
     methods: ['GET'],
     requestBody: 'buffered',
     fetch: (request) => handleList(ctx, request),
   })
-  ctx.connection.fetch.register({
+  registerRoute(ctx, {
     path: DOWNLOAD_PATH,
     methods: ['GET'],
     requestBody: 'buffered',

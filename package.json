@@ -1,6 +1,6 @@
 {
   "name": "dsh-session-deliverables",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "type": "module",
   "description": "DSH Web 插件：为每个会话增加「文件」视图，列出本会话交付的文件（Word / Excel / PPT / PDF / 图片 / 视频等），支持一键按附件下载。",
   "main": "index.js",
