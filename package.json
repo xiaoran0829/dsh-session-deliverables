@@ -1,8 +1,8 @@
 {
   "name": "dsh-session-deliverables",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
-  "description": "Per-session deliverables view for DSH: lists the files a Session delivered (Word, Excel, PPT, images, video) in the Session header and downloads any of them as an attachment.",
+  "description": "DSH Web 插件：为每个会话增加「文件」视图，列出本会话交付的文件（Word / Excel / PPT / PDF / 图片 / 视频等），支持一键按附件下载。",
   "main": "index.js",
   "exports": {
     ".": "./index.js",
@@ -17,6 +17,7 @@
     "locale/*.json",
     "icon.svg",
     "README.md",
+    "README.en.md",
     "LICENSE"
   ],
   "dsh": {
