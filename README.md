@@ -2,7 +2,6 @@
 
 A DeepSeek Harness (DSH) Web plugin: adds a **文件 / Files** view to every Session header that lists the files the Session delivered, and downloads any of them as an attachment — over the intranet or through a public reverse proxy.
 
-![Files view](https://raw.githubusercontent.com/OWNER/REPO/main/docs/screenshot.png)
 
 ## What it does
 
