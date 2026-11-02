@@ -20,6 +20,12 @@ The list is derived from the durable Session log (`deliverables/presented`) plus
 dsh plugin --profile web add dsh-session-deliverables
 ```
 
+Or straight from this repository:
+
+```bash
+dsh plugin --profile web add github:xiaoran0829/dsh-session-deliverables
+```
+
 or install it from a source checkout:
 
 ```bash

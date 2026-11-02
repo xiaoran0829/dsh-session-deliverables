@@ -42,5 +42,13 @@
     "deliverables",
     "session-files",
     "download"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xiaoran0829/dsh-session-deliverables.git"
+  },
+  "homepage": "https://github.com/xiaoran0829/dsh-session-deliverables#readme",
+  "bugs": {
+    "url": "https://github.com/xiaoran0829/dsh-session-deliverables/issues"
+  }
 }
