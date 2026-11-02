@@ -57,6 +57,34 @@ node --check client.js
 
 Host 侧是纯 ESM；浏览器侧是惰性的 `window.__ModuleLoader__` 工厂，只依赖 React。
 
+## 接入方式（引导接入）
+
+- 形态：DSH Web Cordis 插件（`dsh.bundle.patch` + `dsh.client`），在 DSH Connection 上注册两个需登录态的 Fetch 路由。
+- `package.json#dshWorkshop` 声明为 `harness-cordis` + `third-party` adapter 的 guided 接入；当前没有事务安装、没有 Registry 安装权限，也没有可执行安装步骤。上面「安装」一节的命令是作者本机经验，不构成 Workshop 安装能力。
+- 安装或升级插件后需重启 DSH Web 的 profile 才生效。
+- 未在 Workshop 官方基线 `@deepseek-ai/dsh@0.1.0-rc.6` 上验证；`evidence` 的安装、失败隔离、热重载、卸载四项均为 `null`（尚无证据）。
+
+## 权限与外部副作用
+
+| 能力 | 事实 |
+|---|---|
+| 文件读取 | 只读会话日志（`deliverables/presented`）与会话工作区内有界扫描（最多 200 个文件、3 秒预算、深度 12，跳过 node_modules 等目录）；不写文件 |
+| HTTP | 在 DSH Connection fence 上注册 `/api/session-files.list` 与 `/api/session-files.download`，继承 GUI 登录态与 Host/Origin 校验 |
+| 越界保护 | 下载只允许会话工作区内、或会话日志明确声明过的文件，其余返回 403 |
+| 网络外发 | 无。插件不发第三方请求 |
+| 进程 | 不起子进程、不跑后台任务、无 install script |
+| 不可 generation 回滚 | 下载行为无持久化副作用；插件不修改任何交付物 |
+
+## 兼容与测试
+
+- 作者本机：DSH Web `0.2.1-rc.3`（当前安装版本）。
+- 已有检查：`node --check index.js client.js` 通过；无单元/集成测试、无官方基线生命周期测试、无失败注入或热重载证据。
+
+## 已知限制
+
+- 列表只认会话日志里 `present` 声明过的交付物；「含工作区成果」是有界补充，超出预算的文件不会出现。
+- 插件没有 dispose 证据，`dshWorkshop.lifecycle.dispose` 如实写 `unknown`。
+
 ## 许可证
 
 MIT

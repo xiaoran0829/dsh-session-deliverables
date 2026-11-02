@@ -1,6 +1,6 @@
 {
   "name": "dsh-session-deliverables",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "module",
   "description": "DSH Web 插件：为每个会话增加「文件」视图，列出本会话交付的文件（Word / Excel / PPT / PDF / 图片 / 视频等），支持一键按附件下载。",
   "main": "index.js",
@@ -44,6 +44,41 @@
     "session-files",
     "download"
   ],
+  "dshWorkshop": {
+    "schema": "omdsh-workshop-package/v1",
+    "type": "plugin",
+    "integration": {
+      "protocol": "harness-cordis",
+      "artifact": "index.js"
+    },
+    "install": {
+      "mode": "guided",
+      "adapter": "third-party",
+      "failurePolicy": "manual",
+      "touchesCurrentBeforeActivation": false
+    },
+    "lifecycle": {
+      "activation": "restart-profile",
+      "dispose": "unknown"
+    },
+    "permissions": [
+      "filesystem:read",
+      "session:read",
+      "http:route"
+    ],
+    "capability": {
+      "id": "session-files.list",
+      "kind": "ui",
+      "invocation": "在会话顶栏打开「文件」视图，读取 GET /api/session-files.list?sessionId=…",
+      "expected": "返回该会话由 present 声明的交付物列表；点击行触发 /api/session-files.download 以附件下载"
+    },
+    "evidence": {
+      "install": null,
+      "failureIsolation": null,
+      "hotReload": null,
+      "remove": null
+    }
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/xiaoran0829/dsh-session-deliverables.git"
