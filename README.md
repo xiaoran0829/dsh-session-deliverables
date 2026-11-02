@@ -1,7 +1,5 @@
 # dsh-session-deliverables · 会话文件
 
-[中文](README.md) · [English](README.en.md)
-
 一个 DeepSeek Harness（DSH）Web 插件：在**每个会话顶栏**增加「文件」视图，列出该会话交付的文件，并支持一键按附件下载——内网直连或经公网反向代理都可用。
 
 ## 功能
