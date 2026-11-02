@@ -2,7 +2,7 @@
   "name": "dsh-session-deliverables",
   "version": "1.0.1",
   "type": "module",
-  "description": "DSH Web 插件：为每个会话增加「文件」视图，列出本会话交付的文件（Word / Excel / PPT / PDF / 图片 / 视频等），支持一键按附件下载。",
+  "description": "DSH Web 会话交付文件视图：在会话顶栏列出本会话交付的文件（Word/Excel/PPT/图片/视频），一键按附件下载，内外网一致。｜ Per-session deliverables view for DSH Web: lists the files a Session delivered and downloads any of them as an attachment over intranet or public proxy.",
   "main": "index.js",
   "exports": {
     ".": "./index.js",

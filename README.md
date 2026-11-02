@@ -1,3 +1,29 @@
+# dsh-session-deliverables
+
+DSH Web 插件：会话交付文件视图。
+
+## 中文说明
+
+- **会话顶栏「文件」tab**：列出本会话用 `present` 交付的文件（Word、Excel、PPT、PDF、Markdown、图片、视频、音频、压缩包）。
+- **一键下载**：点整行或「下载」按钮，Host 以 `Content-Disposition: attachment` 流式返回，支持中文文件名，内外网一样。
+- **可选工作区成果**：勾选「含工作区成果」后，追加会话期间工作区里新建的文档/图片/音视频（不含代码、脚本、日志、上传附件）。
+- **侧边栏预览下载**：原生 DSH 文档预览头（Excel、PDF、图片等）出现「下载」按钮。
+- **安全**：两条路由挂在 DSH Connection 鉴权链上，继承登录与 Host/Origin 校验；下载只允许会话工作区内或会话日志声明过的文件。
+
+### 安装
+
+```bash
+dsh plugin --profile web add dsh-session-deliverables
+```
+
+或从仓库安装：
+
+```bash
+dsh plugin --profile web add github:xiaoran0829/dsh-session-deliverables
+```
+
+---
+
 # dsh-session-deliverables · 会话文件
 
 一个 DeepSeek Harness（DSH）Web 插件：在**每个会话顶栏**增加「文件」视图，列出该会话交付的文件，并支持一键按附件下载——内网直连或经公网反向代理都可用。
