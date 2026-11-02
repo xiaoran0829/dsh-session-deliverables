@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Session Files",
+    "description": "Adds a Files view to every Session header that lists the deliverables this session declared (Word, Excel, PPT, images, video) and downloads any of them as an attachment."
+  }
+}
